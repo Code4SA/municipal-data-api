@@ -12,7 +12,7 @@ from household.chart import stack_chart, chart_data, percent_increase, yearly_pe
 from municipal_finance.models import AmountType
 
 from .profiles import get_profile
-from .models import Geography, LocationNotFound
+from .models import Geography, LocationNotFound, MunicipalityProfile
 
 from . import models
 import municipal_finance
@@ -29,7 +29,7 @@ class GeographyViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class MunicipalityProfileViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = municipal_finance.models.MunicipalityProfile.objects.all()
+    queryset = MunicipalityProfile.objects.all()
     serializer_class = serializers.MunicipalityProfileSerializer
 
 

@@ -1,23 +1,4 @@
-"""
-A script to build a set files of materialised views of the data presented
-in municipality profiles on the Municipal Money website.
 
-Municipality-specific profile data is stored in municipality-specific files
-since producing them takes a lot of time with many queries against the API.
-By storing municipality-specific data separately from comparisons to other
-municipalities based on this data (e.g. medians, number of similar
-municipalities in norm bounds) allows quick iteration on the latter without
-recalculating muni-specifics from the API each time.
-
-By storing this data to file instead of database, version control helps to
-understand what changed as code is changed and avoid unintended changes to
-calculations. It also allows deploying template and data changes synchronously
-and avoids data/code structure mismatch that could occur if the data is in
-a database and not upgraded during deployment - potentially leading to downtime.
-
-By keeping this script separate from the Municipal Money website django app,
-this data can be recalculated without more-complex environment setup.
-"""
 import sys
 import json
 
@@ -207,6 +188,39 @@ def calc_provincial_rating_counts(munis):
     return prov_rating_counts
 
 
+def compile_profile(
+    api_client,
+    last_audit_year,
+    last_opinion_year,
+    last_uifw_year,
+    last_audit_quarter,
+    geo_code,
+):
+    # Fetch data from the API
+    api_data = ApiData(
+        api_client,
+        geo_code,
+        last_audit_year,
+        last_opinion_year,
+        last_uifw_year,
+        last_audit_quarter,
+    )
+    api_data.fetch_data()
+    # Build profile data
+    profile = {
+        'mayoral_staff': api_data.mayoral_staff(),
+        'muni_contact': api_data.muni_contact(),
+        'audit_opinions': api_data.audit_opinions(),
+        'indicators': api_data.indicators(),
+        'demarcation': Demarcation(api_data).as_dict(),
+    }
+    # Save profile to database
+    MunicipalityProfile(
+        demarcation_code=geo_code,
+        data=profile,
+    ).save()
+
+
 def compile_profiles(
     api_client,
     last_audit_year,
@@ -216,28 +230,15 @@ def compile_profiles(
 ):
     munis = get_munis(api_client)
     for muni in munis:
-        demarcation_code = muni.get('municipality.demarcation_code')
-        api_data = ApiData(
+        geo_code = muni.get('municipality.demarcation_code')
+        compile_profile(
             api_client,
-            demarcation_code,
             last_audit_year,
             last_opinion_year,
             last_uifw_year,
             last_audit_quarter,
+            geo_code,
         )
-        api_data.fetch_data()
-        profile = {
-            'mayoral_staff': api_data.mayoral_staff(),
-            'muni_contact': api_data.muni_contact(),
-            'audit_opinions': api_data.audit_opinions(),
-            'indicators': api_data.indicators(),
-            'demarcation': Demarcation(api_data).as_dict(),
-        }
-        # Save profile to database
-        MunicipalityProfile(
-            demarcation_code=demarcation_code,
-            data=profile,
-        ).save()
 
 
 def compile_medians(api_client):

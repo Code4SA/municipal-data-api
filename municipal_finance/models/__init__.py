@@ -34,9 +34,6 @@ from .financial_position import (
     FinancialPositionItemsV2,
     FinancialPositionFactsV2,
 )
-from .municipality_profiles_compilation import (
-    MunicipalityProfilesCompilation,
-)
 from .capital import (
     CapitalTypeV2,
     CapitalItemsV1,
@@ -99,9 +96,15 @@ class AuditOpinionFacts(models.Model):
 
 
 class DemarcationChanges(models.Model):
-    date = models.DateField(blank=False, null=False)
-    old_code = models.TextField(blank=False, null=False, db_index=True)
-    new_code = models.TextField(blank=False, null=False, db_index=True)
+    date = models.DateField(
+        blank=False, null=False,
+    )
+    old_code = models.TextField(
+        blank=False, null=False, db_index=True,
+    )
+    new_code = models.TextField(
+        blank=False, null=False, db_index=True,
+    )
     old_code_transition = models.TextField(
         blank=False, null=False, db_index=True,
     )
@@ -112,20 +115,3 @@ class DemarcationChanges(models.Model):
     class Meta:
         verbose_name_plural = "Demarcation Changes"
 
-
-class MunicipalityProfile(models.Model):
-    demarcation_code = models.CharField(max_length=10, primary_key=True)
-    data = JSONField()
-
-    class Meta:
-        db_table = "municipality_profile"
-
-
-class MedianGroup(models.Model):
-    group_id = models.CharField(max_length=10, primary_key=True)
-    data = JSONField()
-
-
-class RatingCountGroup(models.Model):
-    group_id = models.CharField(max_length=10, primary_key=True)
-    data = JSONField()

@@ -3,8 +3,7 @@ from django.conf import settings
 
 import json
 
-from municipal_finance.models import MunicipalityProfile, MedianGroup, RatingCountGroup
-
+from .models import MunicipalityProfile, MedianGroup, RatingCountGroup
 from .utils import comparison_relative_words
 from .profile_data.indicators import get_indicator_calculators
 
