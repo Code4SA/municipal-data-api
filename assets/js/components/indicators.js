@@ -268,12 +268,15 @@ export class IndicatorSection {
       const response = await $.ajax({
         url: '/api/geography/geography/'
       });
-      const miifGrouped  = _.groupBy(response.results, "miif_category");
-      let similarGroup = miifGrouped[this.geography.miif_category];
 
-      // Remove current muni from selection
+      var filteredResults = response.results.filter(function( obj ) {
+          return obj.is_disestablished !== true;
+      });
+      const miifGrouped  = _.groupBy(filteredResults, "miif_category");
+      let similarGroup = miifGrouped[this.geography.miif_category];
+      // Remove current muni from selection and disestablished municipalities
       similarGroup = similarGroup.filter(
-        muni => muni["geo_code"] !== this.geography.geo_code
+        muni => muni["geo_code"] !== this.geography.geo_code //,this.geography.is_disestablished !== 'disestablished'
       );
 
       let groups;
