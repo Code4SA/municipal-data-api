@@ -82,6 +82,7 @@ from .updates import (
     CapitalFactsV2Update,
     AuditOpinionFactsUpdate,
 )
+from .demarcation_changes import DemarcationChanges
 
 
 class AuditOpinionFacts(models.Model):
@@ -93,25 +94,4 @@ class AuditOpinionFacts(models.Model):
 
     class Meta:
         db_table = "audit_opinion_facts"
-
-
-class DemarcationChanges(models.Model):
-    date = models.DateField(
-        blank=False, null=False,
-    )
-    old_code = models.TextField(
-        blank=False, null=False, db_index=True,
-    )
-    new_code = models.TextField(
-        blank=False, null=False, db_index=True,
-    )
-    old_code_transition = models.TextField(
-        blank=False, null=False, db_index=True,
-    )
-    new_code_transition = models.TextField(
-        blank=False, null=False, db_index=True,
-    )
-
-    class Meta:
-        verbose_name_plural = "Demarcation Changes"
 

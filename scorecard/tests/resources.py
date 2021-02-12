@@ -1,6 +1,8 @@
 
 from import_export import resources, fields, widgets
 
+from municipal_finance.tests.resources import DemarcationChangesResource
+
 from ..models import (
     Geography,
     MunicipalityProfile,
@@ -12,7 +14,7 @@ from ..models import (
 class GeographyResource(resources.ModelResource):
     class Meta:
         model = Geography
-        import_id_fields = ['geo_code']
+        import_id_fields = ["geo_code"]
 
 
 class MunicipalityProfileResource(resources.ModelResource):

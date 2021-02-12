@@ -1,0 +1,4 @@
+id,geo_level,geo_code,name,long_name,square_kms,parent_level,parent_code,province_name,province_code,category,postal_address_1,postal_address_2,postal_address_3,street_address_1,street_address_2,street_address_4,phone_number,fax_number,url,street_address_3,miif_category,population
+57,municipality,EC103,Ikwezi,"Ikwezi, Eastern Cape",4562.73,district,DC10,Eastern Cape,EC,B,P.O BOX 12,JANSENVILLE,6265,34 Main Street,Jansenville,,049 836 0021,049 836 0105,http://www.ikwezimunicipality.co.za,6265,B3,10537
+73,municipality,EC137,Engcobo,"Engcobo, Eastern Cape",2485.79582750785,district,DC13,Eastern Cape,EC,B,P O BOX 24,ENGCOBO,5050,Town Hall,58 Union Street,5050,047 548 5600,047 548 1078,,Engcobo,B4,155514
+155,municipality,EC101,Dr Beyers Naude,"Dr Beyers Naude, Eastern Cape",28668.4905107623,district,DC10,Eastern Cape,EC,B,P O BOX 71,GRAAFF- REINET,6280,The Town Hall,Church Square,6280,049 807 5700,049 892 6137,"http://www,bnlm.gov.za",Graaff-Reinet,B3,79293

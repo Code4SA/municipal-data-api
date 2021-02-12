@@ -393,7 +393,7 @@ LOGGING = {
     "root": {"handlers": ["console"], "level": "ERROR"},
     "loggers": {
         "municipal_finance": {"level": "DEBUG" if DEBUG else "INFO"},
-        "sqlalchemy.engine": {"level": "INFO" if DEBUG else "WARN"},
+        #"sqlalchemy.engine": {"level": "INFO" if DEBUG else "WARN"},
         "django": {"level": "DEBUG" if DEBUG else "INFO"},
     },
 }

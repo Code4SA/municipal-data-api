@@ -21,6 +21,7 @@ from ..models import (
     UIFWExpenseFacts,
     AuditOpinionFacts,
     MunicipalStaffContacts,
+    DemarcationChanges,
 )
 
 
@@ -176,4 +177,9 @@ class MunicipalStaffContactsResource(resources.ModelResource):
             "demarcation_code",
             "role",
         ]
+
+
+class DemarcationChangesResource(resources.ModelResource):
+    class Meta:
+        model = DemarcationChanges
 

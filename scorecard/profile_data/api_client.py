@@ -7,6 +7,16 @@ logger = logging.getLogger("municipal_finance")
 
 
 class ApiClient(object):
+
+    @classmethod
+    def raise_for_status(cls, response):
+        if response.status_code != 200:
+            raise Exception(
+                "Request to %s failed with status code %s" % (
+                    response.url, response.status_code
+                )
+            )
+
     def __init__(self, get, api_url):
         self.get = get
         self.api_url = api_url + "/cubes/"

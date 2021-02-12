@@ -5,7 +5,6 @@ from argparse import Namespace
 from django.contrib import admin
 from django_q.tasks import async_task
 from import_export.admin import ImportExportModelAdmin
-from constance import config
 
 from .models import (
     MunicipalStaffContactsUpdate,

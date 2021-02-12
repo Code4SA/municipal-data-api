@@ -5,6 +5,7 @@ import json
 from itertools import groupby
 from collections import defaultdict
 from urllib.parse import urlparse
+from datetime import datetime
 
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -30,24 +31,74 @@ from scorecard.profile_data.indicators import (
 sys.path.append('.')
 
 
-def get_munis(api_client):
-    query = api_client.api_get({
+def fetch_municipalities(api_client):
+    response = api_client.api_get({
         'query_type': 'facts',
         'cube': 'municipalities',
         'fields': [
             'municipality.demarcation_code',
-            'municipality.name',
             'municipality.miif_category',
             'municipality.province_code',
         ],
         'value_label': '',
     })
-    result = query.result()
-    result.raise_for_status()
+    result = response.result()
+    ApiClient.raise_for_status(result)
     body = result.json()
     if body.get("total_cell_count") == body.get("page_size"):
         raise Exception("should page municipalities")
     return body.get("data")
+
+
+def fetch_demarcation_changes(api_client):
+    response = api_client.api_get({
+        "query_type": "facts",
+        "cube": "demarcation_changes",
+        "fields": [
+            "old_demarcation.code",
+            "old_code_transition.code",
+            "date.date",
+        ],
+    })
+    result = response.result()
+    ApiClient.raise_for_status(result)
+    body = result.json()
+    return body.get("data")
+
+
+def get_municipalities(api_client):
+    municipalities = fetch_municipalities(api_client)
+    demarcation_changes = fetch_demarcation_changes(api_client)
+    def process_demarcation_change(data):
+        return [
+            data["old_demarcation.code"],
+            {
+                "date": data["date.date"],
+            }
+        ]
+    disestablished = dict(
+        map(process_demarcation_change, demarcation_changes)
+    )
+    def process_municipality(data):
+        geo_code = data["municipality.demarcation_code"]
+        result = {
+            "geo_code": geo_code,
+            "miif_category": data["municipality.miif_category"],
+            "province_code": data["municipality.province_code"],
+        }
+        disestablished_data = disestablished.get(geo_code)
+        if disestablished_data is None:
+            result.update({
+                "disestablished": False,
+            })
+        else:
+            result.update({
+                "disestablished": True,
+                "disestablished_date": disestablished_data["date"],
+            })
+        return result
+ 
+    return list(map(process_municipality, municipalities))
 
 
 def get_national_miif_sets(munis):
@@ -62,7 +113,7 @@ def get_national_miif_sets(munis):
     }
     """
     nat_sets = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
-    def dev_cat_key(muni): return muni['municipality.miif_category']
+    def dev_cat_key(muni): return muni["miif_category"]
     dev_cat_sorted = sorted(munis, key=dev_cat_key)
     for calculator in get_indicator_calculators(has_comparisons=True):
         name = calculator.name
@@ -90,9 +141,9 @@ def get_provincial_miif_sets(munis):
     prov_sets = defaultdict(lambda: defaultdict(
         lambda: defaultdict(lambda: defaultdict(list))))
 
-    def dev_cat_key(muni): return muni['municipality.miif_category']
+    def dev_cat_key(muni): return muni["miif_category"]
     dev_cat_sorted = sorted(munis, key=dev_cat_key)
-    def prov_key(muni): return muni['municipality.province_code']
+    def prov_key(muni): return muni["province_code"]
     for calculator in get_indicator_calculators(has_comparisons=True):
         name = calculator.name
         for dev_cat, dev_cat_group in groupby(dev_cat_sorted, dev_cat_key):
@@ -190,11 +241,11 @@ def calc_provincial_rating_counts(munis):
 
 def compile_profile(
     api_client,
+    geo_code,
     last_audit_year,
     last_opinion_year,
     last_uifw_year,
     last_audit_quarter,
-    geo_code,
 ):
     # Fetch data from the API
     api_data = ApiData(
@@ -222,32 +273,43 @@ def compile_profile(
 
 
 def compile_profiles(
+    municipalities,
     api_client,
     last_audit_year,
     last_opinion_year,
     last_uifw_year,
     last_audit_quarter,
 ):
-    munis = get_munis(api_client)
-    for muni in munis:
-        geo_code = muni.get('municipality.demarcation_code')
-        compile_profile(
-            api_client,
-            last_audit_year,
-            last_opinion_year,
-            last_uifw_year,
-            last_audit_quarter,
-            geo_code,
-        )
+    for municipality in municipalities:
+        if municipality["disestablished"]:
+            disestablished_date = datetime.strptime(
+                municipality["disestablished_date"], "%Y-%m-%d"
+            )
+            target_year = disestablished_date.year - 1
+            compile_profile(
+                api_client,
+                municipality["geo_code"],
+                target_year,
+                target_year,
+                target_year,
+                f"${target_year}q4",
+            )
+        else:
+            compile_profile(
+                api_client,
+                municipality["geo_code"],
+                last_audit_year,
+                last_opinion_year,
+                last_uifw_year,
+                last_audit_quarter,
+            )
 
 
-def compile_medians(api_client):
+def compile_medians(munis):
     # Retrieve profiles and use indicators
-    munis = get_munis(api_client)
     for muni in munis:
-        demarcation_code = muni.get('municipality.demarcation_code')
         profile = MunicipalityProfile.objects.get(
-            demarcation_code=demarcation_code
+            demarcation_code=muni["geo_code"]
         )
         indicators = profile.data['indicators']
         muni.update(indicators)
@@ -265,13 +327,11 @@ def compile_medians(api_client):
     ).save()
 
 
-def compile_rating_counts(api_client):
-    munis = get_munis(api_client)
+def compile_rating_counts(munis):
     # Retrieve profiles and use indicators
     for muni in munis:
-        demarcation_code = muni.get('municipality.demarcation_code')
         profile = MunicipalityProfile.objects.get(
-            demarcation_code=demarcation_code
+            demarcation_code=muni["geo_code"]
         )
         indicators = profile.data['indicators']
         muni.update(indicators)
@@ -316,12 +376,14 @@ def compile_data(
 
     api_client = ApiClient(get, api_url)
     # Compile data
+    municipalities = get_municipalities(api_client)
     compile_profiles(
+        municipalities,
         api_client,
         last_audit_year,
         last_opinion_year,
         last_uifw_year,
         last_audit_quarter,
     )
-    compile_medians(api_client)
-    compile_rating_counts(api_client)
+    compile_medians(municipalities)
+    compile_rating_counts(municipalities)

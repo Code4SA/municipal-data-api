@@ -87,7 +87,7 @@ class ApiData(object):
     def response_to_results(self, response, query):
         self.raise_if_overloaded(response)
         self.raise_if_paged(response)
-        self.raise_for_status(response)
+        ApiClient.raise_for_status(response)
         response_dict = response.json()
         if query["query_type"] == "facts":
             return query["results_structure"](query, response_dict["data"])
@@ -95,14 +95,6 @@ class ApiData(object):
             return query["results_structure"](query, response_dict["cells"])
         elif query["query_type"] == "model":
             return query["results_structure"](query, response_dict["model"])
-
-    def raise_for_status(self, response):
-        if response.status_code != 200:
-            raise Exception(
-                "Request to %s failed with status code %s" % (
-                    response.url, response.status_code
-                )
-            )
 
     def raise_if_overloaded(self, response):
         DB_TIMEOUT_MSG = "(psycopg2.extensions.QueryCanceledError) canceling statement due to statement timeout\n"

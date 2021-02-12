@@ -1,6 +1,8 @@
 
 from django.contrib import admin
 from django.conf import settings
+from django_q.tasks import async_task
+from constance import config
 
 from .models import (
     Geography,
@@ -55,7 +57,7 @@ class MunicipalityProfilesCompilationAdmin(admin.ModelAdmin):
         # Queue task
         async_task(
             "scorecard.compile_profiles.compile_data",
-            API_URL,
+            settings.API_URL,
             obj.last_audit_year,
             obj.last_opinion_year,
             obj.last_uifw_year,
