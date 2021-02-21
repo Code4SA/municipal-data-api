@@ -54,7 +54,6 @@ services:
       args:
         USER_ID: ${USER_ID:-1001}
         GROUP_ID: ${GROUP_ID:-1001}
-      dockerfile: Dockerfile
     command: bin/wait-for-postgres.sh python manage.py runserver 0.0.0.0:8002
     # command: bin/wait-for-postgres.sh gunicorn --limit-request-line 7168 --worker-class gevent municipal_finance.wsgi:application -t 600 --log-file - -b 0.0.0.0:8002
     volumes:

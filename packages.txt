@@ -7,3 +7,5 @@ libpq-dev
 git
 # chromium for its dependencies, while we actually use the puppeteer chromium
 chromium
+# webdriver for selenium testing
+chromium-driver

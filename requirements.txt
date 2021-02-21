@@ -54,6 +54,7 @@ PyYAML==5.1.1
 requests==2.20.0
 requests-futures==0.9.7
 s3transfer==0.3.3
+selenium==3.141.0
 sentry-sdk==0.19.1
 simplegeneric==0.8.1
 six==1.10.0
