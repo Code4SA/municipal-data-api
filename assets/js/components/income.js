@@ -4,7 +4,6 @@ import {
   ratingColor,
   formatForType,
   locale,
-  formatPhase,
 } from '../utils.js';
 import PercentageStackedChart  from 'municipal-money-charts/src/components/MunicipalCharts/PercentageStackedChart';
 import BarChart  from 'municipal-money-charts/src/components/MunicipalCharts/BarChart';
@@ -19,18 +18,19 @@ const spentColor = "#91899C";
 const defocusedColor = "#d3e3e8";
 
 class AbstractIncomeSection {
-  constructor(selector, sectionData) {
+  constructor(selector, sectionData, amountTypes) {
     this.$element = $(selector);
     logIfUnequal(1, this.$element.length);
     this.sectionData = sectionData;
+    this.amountTypes = amountTypes;
     this.$chartContainer = this.$element.find(".indicator-chart");
   }
 
 }
 
 export class IncomeSection extends AbstractIncomeSection {
-  constructor(selector, sectionData) {
-    super(selector, sectionData);
+  constructor(selector, sectionData, amountTypes) {
+    super(selector, sectionData, amountTypes);
     this._initIndicator();
     this._initChart();
     this._initDropdown();
@@ -82,7 +82,7 @@ export class IncomeSection extends AbstractIncomeSection {
     this._year = this.sectionData["year"];
     const options = [
       [
-        `${formatFinancialYear(this._year)} ${formatPhase("AUDA")}`,
+        `${formatFinancialYear(this._year)} ${this.amountTypes["AUDA"]}`,
         {
           year: this._year,
           phase: "AUDA",
@@ -102,8 +102,8 @@ export class IncomeSection extends AbstractIncomeSection {
 }
 
 export class LocalIncomeSection extends AbstractIncomeSection {
-  constructor(selector, sectionData) {
-    super(selector, sectionData);
+  constructor(selector, sectionData, amountTypes) {
+    super(selector, sectionData, amountTypes);
     this._initIndicator();
     this._initChartData();
     this._initChart();
@@ -147,7 +147,7 @@ export class LocalIncomeSection extends AbstractIncomeSection {
   _initDropdown() {
     const options = [
       [
-        `${formatFinancialYear(this._year)} ${formatPhase("AUDA")}`,
+        `${formatFinancialYear(this._year)} ${this.amountTypes["AUDA"]}`,
         {
           year: this._year,
           phase: "AUDA",
@@ -163,8 +163,8 @@ export class LocalIncomeSection extends AbstractIncomeSection {
 }
 
 export class TransfersSection extends AbstractIncomeSection {
-  constructor(selector, sectionData) {
-    super(selector, sectionData);
+  constructor(selector, sectionData, amountTypes) {
+    super(selector, sectionData, amountTypes);
     this._initChart();
     const initialPeriodOption = this._initDropdown();
     this.selectData(initialPeriodOption[1]);
@@ -192,7 +192,7 @@ export class TransfersSection extends AbstractIncomeSection {
             "provincial_transfers" in types &&
             "equitable_share" in types) {
           options.push([
-            `${formatFinancialYear(year)} ${formatPhase(phase)}`,
+            `${formatFinancialYear(year)} ${this.amountTypes[phase]}`,
             {
               year: year,
               phase: phase,
@@ -242,8 +242,8 @@ export class TransfersSection extends AbstractIncomeSection {
 }
 
 export class EquitableShareSection extends TransfersSection {
-  constructor(selector, sectionData) {
-    super(selector, sectionData);
+  constructor(selector, sectionData, amountTypes) {
+    super(selector, sectionData, amountTypes);
   }
 
   selectData(selection) {
@@ -277,8 +277,8 @@ export class EquitableShareSection extends TransfersSection {
 }
 
 export class NationalConditionalGrantsSection extends AbstractIncomeSection {
-  constructor(selector, sectionData) {
-    super(selector, sectionData);
+  constructor(selector, sectionData, amountTypes) {
+    super(selector, sectionData, amountTypes);
     this._initChartData();
     this._initChart();
     this._initLegend();
@@ -373,7 +373,7 @@ export class NationalConditionalGrantsSection extends AbstractIncomeSection {
       options.push(["Not available", {}]);
     } else {
       options.push([
-        `${formatFinancialYear(this._year)} ${formatPhase("SCHD")}`,
+        `${formatFinancialYear(this._year)} ${this.amountTypes["SCHD"]}`,
         {
           year: this._year,
           phase: "AUDA",
@@ -389,8 +389,8 @@ export class NationalConditionalGrantsSection extends AbstractIncomeSection {
 }
 
 export class ProvincialTransfersSection extends AbstractIncomeSection {
-  constructor(selector, sectionData) {
-    super(selector, sectionData);
+  constructor(selector, sectionData, amountTypes) {
+    super(selector, sectionData, amountTypes);
     this.analyticsName = "provincial-transfers-section";
     this._initChartData();
     this._initChart();
@@ -431,7 +431,7 @@ export class ProvincialTransfersSection extends AbstractIncomeSection {
     for (let year in this._chartData) {
       for (let phase in this._chartData[year]) {
         options.push([
-          `${formatFinancialYear(year)} ${formatPhase(phase)}`,
+          `${formatFinancialYear(year)} ${this.amountTypes[phase]}`,
           {
             year: year,
             phase: phase,

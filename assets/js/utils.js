@@ -66,21 +66,6 @@ export function formatForType(type, value) {
   }
 }
 
-export function formatPhase(code) {
-  switch (code) {
-  case "SCHD": return "Allocations";
-  case "ORGB": return "Original budget";
-  case "ADJB": return "Adjusted budget";
-  case "AUDA": return "Audited actual";
-  case "ACT": return "Actual";
-  case "IBY1": return "Forecast budget";
-  case "IBY2": return "Forecast budget";
-  default:
-    console.error("unknown phase", code);
-    return "Phase unknown";
-  }
-}
-
 export const humaniseRand = (x, longForm) => {
   longForm = longForm === undefined ? true : longForm;
   const randSpace = longForm ? ' ' : '';

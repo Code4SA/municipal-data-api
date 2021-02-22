@@ -62,34 +62,66 @@ export default class ProfilePage {
 
     // Income
     errorBoundary(() => {
-      new IncomeSection("#income-summary", pageData.indicators.revenue_sources);
+      new IncomeSection(
+        "#income-summary",
+        pageData.indicators.revenue_sources,
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
-      new LocalIncomeSection("#local-income-sources", {
-        "revenueSources": pageData.indicators.revenue_sources,
-        "revenueBreakdown": pageData.indicators.local_revenue_breakdown,
-      });
+      new LocalIncomeSection(
+        "#local-income-sources",
+        {
+          "revenueSources": pageData.indicators.revenue_sources,
+          "revenueBreakdown": pageData.indicators.local_revenue_breakdown,
+        },
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
-      new TransfersSection("#types-of-transfers", pageData.indicators.grants);
+      new TransfersSection(
+        "#types-of-transfers",
+        pageData.indicators.grants,
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
-      new EquitableShareSection("#equitable-share", pageData.indicators.grants);
+      new EquitableShareSection(
+        "#equitable-share",
+        pageData.indicators.grants,
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
-      new NationalConditionalGrantsSection("#national-conditional-grants", pageData.indicators.grants);
+      new NationalConditionalGrantsSection(
+        "#national-conditional-grants",
+        pageData.indicators.grants,
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
-      new ProvincialTransfersSection("#provincial-transfers", pageData.indicators.grants);
+      new ProvincialTransfersSection(
+        "#provincial-transfers",
+        pageData.indicators.grants,
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
-      new TimeSeriesSection("#income-budget-actual-time", pageData.indicators.income_time_series);
+      new TimeSeriesSection(
+        "#income-budget-actual-time",
+        pageData.indicators.income_time_series,
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
       new AdjustmentsSection("#income-adjustments", pageData.indicators.income_adjustments);
     });
     errorBoundary(() => {
-      new TimeSeriesSection("#spending-budget-actual-time", pageData.indicators.spending_time_series);
+      new TimeSeriesSection(
+        "#spending-budget-actual-time",
+        pageData.indicators.spending_time_series,
+        pageData.amount_types_v1,
+      );
     });
     errorBoundary(() => {
       new AdjustmentsSection("#spending-adjustments", pageData.indicators.spending_adjustments);

@@ -4,7 +4,6 @@ import {
   ratingColor,
   formatForType,
   locale,
-  formatPhase,
   humaniseRand,
 } from '../utils.js';
 import GroupedBarChart from 'municipal-money-charts/src/components/MunicipalCharts/GroupedBarChart';
@@ -14,10 +13,11 @@ import LegendItem from './legend.js';
 
 
 export class TimeSeriesSection {
-  constructor(selector, sectionData) {
+  constructor(selector, sectionData, amountTypes) {
     this.$element = $(selector);
     logIfUnequal(1, this.$element.length);
     this.sectionData = sectionData;
+    this.amountTypes = amountTypes;
     this.$chartContainer = this.$element.find(".indicator-chart");
 
     this.ordering = [
@@ -65,7 +65,11 @@ export class TimeSeriesSection {
     template.remove();
 
     this.ordering.slice(0, 4).forEach((code) => {
-      container.append(new LegendItem(template, this.colors[code], formatPhase(code)).$element);
+      container.append(
+        new LegendItem(
+          template, this.colors[code], this.amountTypes[code]
+        ).$element
+      );
     });
     this.$element.find(".indicator-chart__legend").css("display", "block");
   }
