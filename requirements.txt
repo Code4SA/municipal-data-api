@@ -10,7 +10,7 @@ dj-database-url==0.4.1
 Django==1.11.29
 django-constance==2.5.0
 django-cors-headers==2.1.0
-django-debug-toolbar==2.2
+django-debug-toolbar==2.2.1
 django-extensions==1.6.1
 django-environ==0.4.5
 django-import-export==1.1.0
