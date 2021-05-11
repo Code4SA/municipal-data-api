@@ -176,7 +176,11 @@ class GeographyDetailView(TemplateView):
                     .first()
                     .as_dict()
                 )
-        infrastructure_financial_year = str(FinancialYear.objects.get(active=True))
+        try:
+            infrastructure_financial_year = str(FinancialYear.objects.get(active=True))
+        except:
+            infrastructure_financial_year = "2019/2020"
+
         infrastructure = (
             Project.objects.prefetch_related(
                 "geography",
