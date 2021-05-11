@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 from django.http import Http404, HttpResponse
 from django.urls import reverse
 
-from infrastructure.models import Project
+from infrastructure.models import Project, FinancialYear
 from household.models import HouseholdServiceTotal, HouseholdBillTotal
 from household.chart import stack_chart, chart_data, percent_increase, yearly_percent
 from municipal_finance.models import AmountType
@@ -176,7 +176,7 @@ class GeographyDetailView(TemplateView):
                     .first()
                     .as_dict()
                 )
-        infrastructure_financial_year = "2019/2020"
+        infrastructure_financial_year = str(FinancialYear.objects.get(active=True))
         infrastructure = (
             Project.objects.prefetch_related(
                 "geography",
