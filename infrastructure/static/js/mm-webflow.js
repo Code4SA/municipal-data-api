@@ -498,19 +498,26 @@ function mmWebflow(js) {
             });
 
             response.results.projects.forEach(function(project) {
+                var current_year = new Date().getFullYear();
+
                 // TODO figure out where to put these
                 var budget_phase = "Budget year";
-                var financial_year = "2019/2020";
                 project.total_forecast_budget = 0;
 
                 if (project.expenditure.length > 0) {
-                    var expenditures = project.expenditure.filter(function(exp) {
-                        return exp.financial_year.budget_year == financial_year;
-                    });
-		    
+                    // Get the most recent year only
+                    for (var i = current_year; i >= 2019; i--) {
+                        var expenditures = project.expenditure.filter(function(exp) {
+                            var budget = exp.financial_year.budget_year == get_year(i);
+                            if (budget == true) {i=0}
+                            return budget;
+                        });
+                    }
+
                     expenditures = expenditures.filter(function(exp) {
                         return exp.budget_phase.name == budget_phase; 
                     });
+
                     if (expenditures.length > 0)
                         project.total_forecast_budget = expenditures[0].amount;
                 }
@@ -518,6 +525,11 @@ function mmWebflow(js) {
             });
 
             return response;
+        }
+
+        function get_year(year) {
+            var temp_year = year + "/" + (year + 1);
+            return temp_year;
         }
 
         function triggerSearch(url, clearProjects) {
