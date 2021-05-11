@@ -200,6 +200,8 @@ class GeographyDetailView(TemplateView):
             "project_count": infrastructure.count(),
             "financial_year": infrastructure_financial_year[5:9]
         }
+        for count, p in enumerate(infrastructure[:5].values("expenditure__amount",)):
+            page_json["infrastructure_summary"]["projects"][count]["expenditure_amount"] = p["expenditure__amount"]
 
         households = HouseholdBillTotal.summary.bill_totals(self.geo_code)
         page_json["household_percent"] = percent_increase(households)
