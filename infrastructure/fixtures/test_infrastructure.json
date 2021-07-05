@@ -115,6 +115,26 @@
         "latitude": 0.0
     }
 },
+    {
+    "model": "infrastructure.project",
+    "pk": 4,
+    "fields": {
+        "geography": 245,
+        "function": "Administrative and Corporate Support",
+        "project_description": "",
+        "project_number": "PC002003005_00018",
+        "project_type": "New",
+        "mtsf_service_outcome": "",
+        "iudf": "",
+        "own_strategic_objectives": "",
+        "asset_class": "Furniture and Office Equipment",
+        "asset_subclass": "",
+        "ward_location": "Administrative or Head Office,Whole of the Metro,...",
+        "longitude": 0.0,
+        "latitude": 0.0
+    }
+},
+
 {
     "model": "scorecard.geography",
     "pk": 243,
@@ -133,6 +153,7 @@
         "population": 3740026
     }
 },
+
 {
     "model": "scorecard.geography",
     "pk": 244,
@@ -149,6 +170,24 @@
         "category": "B",
         "miif_category": "B3",
         "population": 67147
+    }
+},
+ {
+    "model": "scorecard.geography",
+    "pk": 245,
+    "fields": {
+        "geo_level": "municipality",
+        "geo_code": "BUF",
+        "name": "Buffalo City",
+        "long_name": "Buffalo City, Eastern Cape",
+        "square_kms": 2751.69154949282,
+        "parent_level": "province",
+        "parent_code": "EC",
+        "province_name": "Eastern Cape",
+        "province_code": "EC",
+        "category": "A",
+        "miif_category": "A",
+        "population": 781026
     }
 }
 ]

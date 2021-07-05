@@ -17,7 +17,7 @@ jobs:
       - run: docker-compose run --rm scorecard python manage.py collectstatic --no-input
       - run: docker-compose run --rm scorecard bin/wait-for-postgres.sh python manage.py migrate
       - name: Run tests
-        run: docker-compose run --rm scorecard python manage.py test municipal_finance scorecard
+        run: docker-compose run --rm scorecard python manage.py test municipal_finance scorecard infrastructure
       # Ensure that the demodata fixture can be loaded and the data is available in the API
       # - smoke test
       # - ensure development environment setup is maintained.

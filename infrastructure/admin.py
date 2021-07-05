@@ -43,11 +43,12 @@ class ExpenditureAdmin(admin.ModelAdmin):
 @admin.register(models.ProjectQuarterlySpend)
 class QuarterlySpendAdmin(admin.ModelAdmin):
     list_display = ("project", "financial_year", "q1", "q2", "q3", "q4")
+    list_filter = ["financial_year"]
 
 
 @admin.register(models.QuarterlySpendFile)
 class SpendFileAdmin(admin.ModelAdmin):
-    list_display = ("financial_year", "document")
+    list_display = ("financial_year", "document", "status")
     form = UploadFileForm
 
     def save_model(self, request, obj, form, change):
